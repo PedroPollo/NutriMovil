@@ -1,0 +1,121 @@
+{
+  "data": [
+    {
+      "id": "1",
+      "name": "Primer cuestionario",
+      "questions": [
+        {
+          "question": "Cual es tu color favorito",
+          "options": [
+            "Rojo",
+            "Azul",
+            "Amarillo",
+            "Rosa"
+          ],
+          "type": "CLOSE"
+        },
+        {
+          "question": "Cual es tu color menos favorito",
+          "options": [
+            "Rojo",
+            "Azul",
+            "Amarillo",
+            "Rosa"
+          ],
+          "type": "CLOSE"
+        },
+        {
+          "question": "Que nivel estudias",
+          "options": [
+            "Primaria",
+            "Secundaria",
+            "Preparatoria",
+            "Licenciatura"
+          ],
+          "type": "CLOSE"
+        },
+        {
+          "question": "Cual es tu materia favorita",
+          "options": [
+            "Español",
+            "Matematicas",
+            "Ingles",
+            "Deportes"
+          ],
+          "type": "CLOSE"
+        },
+        {
+          "question": "Quiero una extra",
+          "options": [
+            "Español",
+            "Matematicas",
+            "Ingles",
+            "Deportes"
+          ],
+          "type": "CLOSE"
+        },
+        {
+          "question": "Nombre",
+          "options": null,
+          "type": "OPEN"
+        },
+        {
+          "question": "Peso (Kg)",
+          "options": null,
+          "type": "OPEN"
+        },
+        {
+          "question": "Altura (Cm)",
+          "options": null,
+          "type": "OPEN"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "name": "Segunda encuesta",
+      "questions": [
+        {
+          "question": "Cual es tu color favorito",
+          "options": [
+            "Rojo",
+            "Azul",
+            "Amarillo",
+            "Rosa"
+          ],
+          "type": "CLOSE"
+        },
+        {
+          "question": "Cual es tu color menos favorito",
+          "options": [
+            "Rojo",
+            "Azul",
+            "Amarillo",
+            "Rosa"
+          ],
+          "type": "CLOSE"
+        },
+        {
+          "question": "Que nivel estudias",
+          "options": [
+            "Primaria",
+            "Secundaria",
+            "Preparatoria",
+            "Licenciatura"
+          ],
+          "type": "CLOSE"
+        },
+        {
+          "question": "Cual es tu materia favorita",
+          "options": [
+            "Español",
+            "Matematicas",
+            "Ingles",
+            "Deportes"
+          ],
+          "type": "CLOSE"
+        }
+      ]
+    }
+  ]
+}
