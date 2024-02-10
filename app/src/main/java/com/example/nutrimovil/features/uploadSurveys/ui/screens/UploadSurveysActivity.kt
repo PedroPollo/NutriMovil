@@ -57,7 +57,7 @@ class UploadSurveysActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = Fondo
                 ) {
-                    AppNavigation(this)
+                    AppNavigation(context = this)
                 }
             }
         }
@@ -69,7 +69,7 @@ class UploadSurveysActivity : ComponentActivity() {
 @Composable
 fun AllView(
     context: UploadSurveysActivity,
-    applicatedSurveysViewModel: AplicatedSurveysViewModel = viewModel()
+    applicatedSurveysViewModel: AplicatedSurveysViewModel = viewModel(),
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -78,7 +78,7 @@ fun AllView(
     ) {
         Button(onClick = {
             val intent = Intent(context,HomeActivity::class.java)
-            applicatedSurveysViewModel.uploadJSON(context, Us.getUser()!!.id)
+            applicatedSurveysViewModel.uploadJSON(context, Us.getUser(context)!!.id)
             context.startActivity(intent)
             context.finish()
         }) {

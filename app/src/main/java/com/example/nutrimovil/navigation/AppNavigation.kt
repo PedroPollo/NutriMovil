@@ -25,105 +25,105 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.nutrimovil.SplashScreen
+import com.example.nutrimovil.data.models.SessionManager
 import com.example.nutrimovil.features.uploadSurveys.ui.screens.AllView
 import com.example.nutrimovil.features.uploadSurveys.ui.screens.BottomNavigationItem
 import com.example.nutrimovil.features.uploadSurveys.ui.screens.DateView
 import com.example.nutrimovil.features.uploadSurveys.ui.screens.PlaceView
 import com.example.nutrimovil.features.uploadSurveys.ui.screens.UploadSurveysActivity
+import com.example.nutrimovil.ui.screens.Login
 import com.example.nutrimovil.ui.screens.MainActivity
-import com.example.nutrimovil.ui.screens.login
 import com.example.nutrimovil.ui.theme.PrimarioVar
 import com.example.nutrimovil.ui.theme.SecundarioVar
 
 @Composable
-fun splashNavigation(cont: MainActivity): Boolean {
+fun SplashNavigation(cont: MainActivity, sessionManager: SessionManager) {
     val navController = rememberNavController()
-    var bandera = false
     NavHost(
         navController = navController,
         startDestination = AppScreens.SplashScreen.route
-    ){
-        composable(AppScreens.SplashScreen.route){
+    ) {
+        composable(AppScreens.SplashScreen.route) {
             SplashScreen(navController = navController)
         }
-        composable(AppScreens.MainScreen.route){
-             bandera = login(context = LocalContext.current, mainActivity = cont)
+        composable(AppScreens.MainScreen.route) {
+            Login(context = LocalContext.current, mainActivity = cont, sessionManager = sessionManager)
         }
     }
-    return bandera
 }
 
-@Composable
-fun AppNavigation(context: UploadSurveysActivity) {
+    @Composable
+    fun AppNavigation(
+        context: UploadSurveysActivity
+    ) {
+        val navController = rememberNavController()
 
-    val navController = rememberNavController()
-
-    val items = listOf(
-        BottomNavigationItem(
-            title = "Todo",
-            selectedIcon = Icons.Filled.CheckCircle,
-            unselectedIcon = Icons.Outlined.CheckCircle
-        ),
-        BottomNavigationItem(
-            title = "Fecha",
-            selectedIcon = Icons.Filled.DateRange,
-            unselectedIcon = Icons.Outlined.DateRange
-        ),
-        BottomNavigationItem(
-            title = "Lugar",
-            selectedIcon = Icons.Filled.LocationOn,
-            unselectedIcon = Icons.Outlined.LocationOn
+        val items = listOf(
+            BottomNavigationItem(
+                title = "Todo",
+                selectedIcon = Icons.Filled.CheckCircle,
+                unselectedIcon = Icons.Outlined.CheckCircle
+            ),
+            BottomNavigationItem(
+                title = "Fecha",
+                selectedIcon = Icons.Filled.DateRange,
+                unselectedIcon = Icons.Outlined.DateRange
+            ),
+            BottomNavigationItem(
+                title = "Lugar",
+                selectedIcon = Icons.Filled.LocationOn,
+                unselectedIcon = Icons.Outlined.LocationOn
+            )
         )
-    )
-    var selectedItemIndex by rememberSaveable {
-        mutableIntStateOf(0)
-    }
+        var selectedItemIndex by rememberSaveable {
+            mutableIntStateOf(0)
+        }
 
-    Scaffold(
-        bottomBar = {
-            NavigationBar(
-                containerColor = SecundarioVar
+        Scaffold(
+            bottomBar = {
+                NavigationBar(
+                    containerColor = SecundarioVar
+                ) {
+                    items.forEachIndexed { index, item ->
+                        NavigationBarItem(
+                            selected = selectedItemIndex == index,
+                            onClick = {
+                                selectedItemIndex = index
+                                navController.navigate(item.title)
+                                //navController.navigate(item.title)
+                            },
+                            label = {
+                                Text(text = item.title)
+                            },
+                            alwaysShowLabel = false,
+                            icon = {
+                                Icon(
+                                    if (index == selectedItemIndex) item.selectedIcon else item.unselectedIcon,
+                                    item.title
+                                )
+                            },
+                            colors = NavigationBarItemDefaults.colors(indicatorColor = PrimarioVar)
+                        )
+                    }
+                }
+            }
+        ) { paddingValues ->
+            NavHost(
+                navController = navController,
+                startDestination = "Todo",
+                modifier = Modifier.padding(paddingValues)
             ) {
-                items.forEachIndexed { index, item ->
-                    NavigationBarItem(
-                        selected = selectedItemIndex == index,
-                        onClick = {
-                            selectedItemIndex = index
-                            navController.navigate(item.title)
-                            //navController.navigate(item.title)
-                        },
-                        label = {
-                            Text(text = item.title)
-                        },
-                        alwaysShowLabel = false,
-                        icon = {
-                            Icon(
-                                if (index == selectedItemIndex) item.selectedIcon else item.unselectedIcon,
-                                item.title
-                            )
-                        },
-                        colors = NavigationBarItemDefaults.colors(indicatorColor = PrimarioVar)
-                    )
+                composable(items[0].title) {
+                    AllView(context = context)
+                }
+
+                composable(items[1].title) {
+                    DateView()
+                }
+
+                composable(items[2].title) {
+                    PlaceView()
                 }
             }
         }
-    ) { paddingValues ->
-        NavHost(
-            navController = navController,
-            startDestination = "Todo",
-            modifier = Modifier.padding(paddingValues)
-        ) {
-            composable(items[0].title) {
-                AllView(context = context)
-            }
-
-            composable(items[1].title) {
-                DateView()
-            }
-
-            composable(items[2].title) {
-                PlaceView()
-            }
-        }
     }
-}

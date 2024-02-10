@@ -48,7 +48,6 @@ import java.util.Calendar
 
 class SurveysActivity : ComponentActivity() {
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -140,7 +139,7 @@ fun ShowSurvey(
                             questionResponse = responses,
                             fecha = SimpleDateFormat("dd-MM-yyyy").format(Calendar.getInstance().time)
                         )
-                        aplicatedSurveysViewModel.putSurvey(gson.toJson(surveyResponse), context, Us.getUser()!!.id)
+                        aplicatedSurveysViewModel.putSurvey(gson.toJson(surveyResponse), context, Us.getUser(context)!!.id)
                         context.startActivity(intent)
                         context.finish()
                     }) {

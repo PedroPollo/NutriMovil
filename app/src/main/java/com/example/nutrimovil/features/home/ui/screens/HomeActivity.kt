@@ -66,7 +66,7 @@ class HomeActivity : ComponentActivity() {
 
     private val loginViewModel: LoginViewModel by viewModels()
     private val surveysResponseViewModel: AplicatedSurveysViewModel by viewModels()
-    private val u = Us.getUser()
+    private val u = Us.getUser(this)
 
     override fun onResume() {
         super.onResume()
@@ -92,8 +92,7 @@ class HomeActivity : ComponentActivity() {
                                 u.id,
                                 this
                             ),
-                            context = this,
-                            close = loginViewModel.closeUser()
+                            context = this
                         )
                     }
                 }
@@ -166,8 +165,7 @@ fun Accepted(
     encuestas: List<SurveyResponse>?,
     context: HomeActivity,
     surveyViewModel: SurveyViewModel = viewModel(),
-    encuestador: String,
-    close: Unit
+    encuestador: String
 ) {
     var showBottomSheet by remember { mutableStateOf(false) }
     rememberCoroutineScope()
@@ -323,10 +321,8 @@ fun Accepted(
                     Button(
                         modifier = Modifier.padding(5.dp), onClick = {
                             val intent = Intent(context, MainActivity::class.java)
-                            Us.closeUser()
-                            close
+                            Us.closeUser(context)
                             context.finish()
-                            context.startActivity(intent)
                         }, colors = ButtonDefaults.buttonColors(PrimarioVar)
                     ) {
                         Icon(

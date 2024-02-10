@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+
+    <application
+        android:name=".MyApplication"
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@drawable/ca_uaz_237"
+        android:label="@string/app_name"
+        android:roundIcon="@drawable/ca_uaz_237"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.NutriMovil"
+        tools:targetApi="31">
+        <activity
+            android:name=".ui.screens.MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.NutriMovil">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".features.home.ui.screens.HomeActivity" />
+        <activity android:name=".features.register.ui.screens.RegisterActivity" />
+        <activity android:name=".features.addResearcher.ui.screens.AddResearcherActivity" />
+        <activity android:name=".features.uploadSurveys.ui.screens.UploadSurveysActivity" />
+        <activity android:name=".features.surveys.ui.screens.SurveysActivity" />
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
+    </application>
+
+</manifest>
