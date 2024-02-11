@@ -1,9 +1,10 @@
 package com.example.nutrimovil.features.register.ui.screens
 
-import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -32,14 +33,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.nutrimovil.ui.screens.MainActivity
 import com.example.nutrimovil.R
+import com.example.nutrimovil.features.addResearcher.viewmodels.ResearcherViewModel
+import com.example.nutrimovil.io.RegisterData
 import com.example.nutrimovil.ui.components.passwordField
 import com.example.nutrimovil.ui.theme.Fondo
 import com.example.nutrimovil.ui.theme.NutriMovilTheme
@@ -47,6 +48,8 @@ import com.example.nutrimovil.ui.theme.PrimarioVar
 import com.example.nutrimovil.ui.theme.SecundarioVar
 
 class RegisterActivity : ComponentActivity() {
+    private val researcherViewModel: ResearcherViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -55,7 +58,8 @@ class RegisterActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = Fondo
                 ) {
-                    Register()
+                    researcherViewModel.getInvestigadores()
+                    Register(researcherViewModel, this)
                 }
             }
         }
@@ -65,9 +69,11 @@ class RegisterActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
-fun Register() {
-    val context = LocalContext.current
-    val list = listOf("Profesor 1", "Profesor 2", "Profesor 3")
+fun Register(
+    researcherViewModel: ResearcherViewModel,
+    context: RegisterActivity
+) {
+    val list = researcherViewModel.investigadores
     Column(
         modifier = Modifier.fillMaxSize(),
         Arrangement.Center,
@@ -78,6 +84,7 @@ fun Register() {
         var matricula by remember { mutableStateOf("") }
         var pass by remember { mutableStateOf("") }
         var repass by remember { mutableStateOf("") }
+        var invId by remember { mutableStateOf<Int?>(null) }
         Row {
             Image(
                 modifier = Modifier.size(92.dp, 101.dp),
@@ -101,7 +108,7 @@ fun Register() {
                         onValueChange = { nombre = it },
                         label = { Text(text = "Nombre") },
                         textStyle = TextStyle(color = Color.Black)
-                        )
+                    )
                 }
                 Row(
                     modifier = Modifier.padding(10.dp)
@@ -111,7 +118,7 @@ fun Register() {
                         onValueChange = { user = it },
                         label = { Text(text = "Usuario") },
                         textStyle = TextStyle(color = Color.Black)
-                        )
+                    )
                 }
                 Row(
                     modifier = Modifier.padding(10.dp)
@@ -151,11 +158,17 @@ fun Register() {
                             expanded = isExpanded,
                             onDismissRequest = { isExpanded = false }
                         ) {
-                            for (label in list) {
-                                DropdownMenuItem(text = { Text(text = label) }, onClick = {
-                                    selectedItem = label
-                                    isExpanded = false
-                                })
+                            if (list != null) {
+                                for (label in list) {
+                                    DropdownMenuItem(text = { Text(text = label.nombre) }, onClick = {
+                                        selectedItem = label.nombre
+                                        isExpanded = false
+                                        invId = label.id
+                                        println()
+                                    })
+                                }
+                            } else {
+                                Toast.makeText(context, "Revise la conexion a internet", Toast.LENGTH_SHORT).show()
                             }
                         }
                     }
@@ -163,18 +176,32 @@ fun Register() {
                 Row(
                     modifier = Modifier.padding(10.dp)
                 ) {
-                    passwordField()
+                    pass = passwordField()
                 }
                 Row(
                     modifier = Modifier.padding(10.dp)
                 ) {
-                    passwordField()
+                    repass = passwordField()
                 }
                 Row(
                     modifier = Modifier.padding(10.dp)
                 ) {
                     Button(
-                        onClick = { /*TODO*/ },
+                        onClick = {
+                            if (pass == "" || repass == "" || nombre == "" || user == "" || matricula == "" || invId == null) {
+                                Toast.makeText(context, "Un campo esta vacio", Toast.LENGTH_SHORT)
+                                    .show()
+                            } else if (pass != repass) {
+                                Toast.makeText(
+                                    context,
+                                    "Las contraseñas deben de coincidir",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+                                researcherViewModel.registerEncuestador(RegisterData(matricula = matricula,nombre = nombre, usuario = user, password = pass, investigadorId = invId!!), context)
+                                context.finish()
+                            }
+                        },
                         colors = ButtonDefaults.buttonColors(PrimarioVar)
                     ) {
                         Text(text = "Registrarme", fontFamily = FontFamily.Monospace)
@@ -182,7 +209,9 @@ fun Register() {
                 }
                 Row {
                     TextButton(
-                        onClick = { context.startActivity(Intent(context, MainActivity::class.java)) }
+                        onClick = {
+                            context.finish()
+                        }
                     ) {
                         Text(text = "Iniciar sesion", color = SecundarioVar)
                     }

@@ -139,7 +139,7 @@ fun ShowSurvey(
                             questionResponse = responses,
                             fecha = SimpleDateFormat("dd-MM-yyyy").format(Calendar.getInstance().time)
                         )
-                        aplicatedSurveysViewModel.putSurvey(gson.toJson(surveyResponse), context, Us.getUser(context)!!.id)
+                        aplicatedSurveysViewModel.putSurvey(gson.toJson(surveyResponse), context, Us.getUser()!!.id)
                         context.startActivity(intent)
                         context.finish()
                     }) {
