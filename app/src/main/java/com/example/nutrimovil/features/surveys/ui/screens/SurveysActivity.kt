@@ -1,8 +1,14 @@
 package com.example.nutrimovil.features.surveys.ui.screens
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.location.Location
+import android.location.LocationManager
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
@@ -22,12 +28,17 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.nutrimovil.data.repository.Us
 import com.example.nutrimovil.features.home.ui.screens.HomeActivity
@@ -47,6 +58,7 @@ import java.util.Calendar
 
 
 class SurveysActivity : ComponentActivity() {
+    private lateinit var locationManager: LocationManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,9 +68,10 @@ class SurveysActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = Fondo
                 ) {
+                    locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
                     val id = intent.getStringExtra("id")
                     val encuestador = intent.getStringExtra("Encuestador")
-                    ShowSurvey(id = id!!, context = this, encuestador = encuestador)
+                    ShowSurvey(id = id!!, context = this, encuestador = encuestador, locationManager = locationManager)
                 }
             }
         }
@@ -84,8 +97,10 @@ fun ShowSurvey(
     id: String,
     context: SurveysActivity,
     encuestador: String?,
-    aplicatedSurveysViewModel: AplicatedSurveysViewModel = viewModel()
+    aplicatedSurveysViewModel: AplicatedSurveysViewModel = viewModel(),
+    locationManager: LocationManager
 ) {
+    var location by remember { mutableStateOf<Location?>(null) }
     val intent = Intent(context, HomeActivity::class.java)
     val encuesta = surveyViewModel.getSurvey(id)
     val preguntas: MutableList<QuestionAndResponses> = mutableListOf()
@@ -110,8 +125,6 @@ fun ShowSurvey(
     lateinit var surveyResponse: SurveyResponse
     val gson = Gson()
 
-
-    println()
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -126,12 +139,16 @@ fun ShowSurvey(
                 },
                 actions = {
                     IconButton(onClick = {
+                        getCurrentLocation(locationManager, context){
+                            location = it
+                        }
                         for (pregunta in preguntas) {
                             responses += QuestionResponse(
                                 pregunta.text,
                                 pregunta.toggleableInfo.find { it.isChecked }?.text
                             )
                         }
+                        Toast.makeText(context,location.toString(), Toast.LENGTH_SHORT).show()
                         surveyResponse = SurveyResponse(
                             id = encuesta.id,
                             name = encuesta.name,
@@ -166,5 +183,31 @@ fun ShowSurvey(
                 }
             }
         }
+    }
+}
+
+fun getCurrentLocation(locationManager: LocationManager, context: SurveysActivity, callback: (Location?) -> Unit){
+    val rEQUESTLOCATIONPERMISSION = 1
+
+    if (ContextCompat.checkSelfPermission(
+        context,
+        Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+        ){
+        val location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+        callback(location)
+    } else {
+        ActivityCompat.requestPermissions(
+            context,
+            arrayOf(
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ),
+            rEQUESTLOCATIONPERMISSION
+        )
+        (context as? ComponentActivity)?.finish()
     }
 }

@@ -48,6 +48,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.nutrimovil.R
 import com.example.nutrimovil.data.repository.Us
 import com.example.nutrimovil.features.addResearcher.ui.screens.AddResearcherActivity
+import com.example.nutrimovil.features.downloadSurvey.ui.screens.DownloadSurveyActivity
 import com.example.nutrimovil.features.home.ui.components.Item
 import com.example.nutrimovil.features.home.viewmodels.AplicatedSurveysViewModel
 import com.example.nutrimovil.features.surveys.data.models.SurveyResponse
@@ -75,7 +76,6 @@ class HomeActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             NutriMovilTheme {
-                println()
                 Surface(
                     modifier = Modifier.fillMaxSize(), color = Fondo
                 ) {
@@ -300,7 +300,11 @@ fun Accepted(
                     }
                     Button(
                         modifier = Modifier.padding(5.dp),
-                        onClick = { /*TODO*/ },
+                        onClick = {
+                                  // TODO
+                            val intent = Intent(context, DownloadSurveyActivity::class.java)
+                            context.startActivity(intent)
+                        },
                         colors = ButtonDefaults.buttonColors(PrimarioVar)
                     ) {
                         Icon(

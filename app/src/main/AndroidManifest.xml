@@ -31,6 +31,7 @@
         <activity android:name=".features.addResearcher.ui.screens.AddResearcherActivity" />
         <activity android:name=".features.uploadSurveys.ui.screens.UploadSurveysActivity" />
         <activity android:name=".features.surveys.ui.screens.SurveysActivity" />
+        <activity android:name=".features.downloadSurvey.ui.screens.DownloadSurveyActivity"/>
 
         <meta-data
             android:name="preloaded_fonts"
