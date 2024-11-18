@@ -17,7 +17,7 @@ class DownloadSurveyViewModel : ViewModel() {
         APIService.create()
     }
 
-    var surveys: Survey? = null
+    var surveys: List<Survey?>? = null
 
     fun getSurveys(id: List<Any?>) {
         viewModelScope.launch {

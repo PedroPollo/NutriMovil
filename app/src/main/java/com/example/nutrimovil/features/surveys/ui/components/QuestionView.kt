@@ -11,10 +11,10 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -53,11 +53,13 @@ fun QuestionViewOpen(pregunta: String, state: SnapshotStateList<ToggleableInfo>)
             if (isExpanded) {
                 state.forEachIndexed { _, info ->
                     OutlinedTextField(
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                            containerColor = Color.White,
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedContainerColor = Color.White,
+                            unfocusedContainerColor = Color.White,
+                            disabledContainerColor = Color.White,
                             focusedBorderColor = SecundarioVar,
                             unfocusedBorderColor = SecundarioVar,
-                            focusedLabelColor = SecundarioVar
+                            focusedLabelColor = SecundarioVar,
                         ),
                         modifier = Modifier.padding(5.dp),
                         label = { Text(text = "Respuesta") },

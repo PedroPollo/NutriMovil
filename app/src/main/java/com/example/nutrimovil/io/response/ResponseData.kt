@@ -23,7 +23,7 @@ data class Investigador(
 data class EncuestasResponse(
     val error: Boolean,
     val status: Int,
-    val body: Survey
+    val body: List<Survey?>
 )
 
 data class ShowableResponse(
