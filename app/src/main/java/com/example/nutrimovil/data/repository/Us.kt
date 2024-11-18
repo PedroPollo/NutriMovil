@@ -1,21 +1,20 @@
 package com.example.nutrimovil.data.repository
 
-import android.content.Context
 import com.example.nutrimovil.data.models.User
 
 class Us {
     companion object {
         private var user: User? = null
 
-        fun setUser(user: User,context: Context){
+        fun setUser(user: User){
             this.user = user
         }
 
-        fun closeUser(context: Context){
+        fun closeUser(){
             this.user = null
         }
 
-        fun getUser(context: Context): User? {
+        fun getUser(): User? {
             return this.user
         }
     }

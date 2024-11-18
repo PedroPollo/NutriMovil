@@ -1,8 +1,10 @@
 package com.example.nutrimovil.ui.screens
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -17,7 +19,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -54,7 +55,6 @@ class MainActivity : ComponentActivity() {
     override fun onRestart() {
         super.onRestart()
         sessionManager.clearUserSession(this)
-        println()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,9 +66,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = Fondo
                 ) {
-                    SplashNavigation(this,sessionManager)
+                    SplashNavigation(sessionManager)
                     if (sessionManager.getUserSession(this) != null){
-                        Us.setUser(sessionManager.getUserSession(this)!!, this)
+                        Us.setUser(sessionManager.getUserSession(this)!!)
                         val intent = Intent(this, HomeActivity::class.java)
                         this.startActivity(intent)
                     }
@@ -78,11 +78,11 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@SuppressLint("ShowToast")
 @Composable
 fun Login(
     context: Context,
     loginViewModel: LoginViewModel = viewModel(),
-    mainActivity: MainActivity,
     sessionManager: SessionManager
 ) {
     Column(
@@ -127,7 +127,7 @@ fun Login(
                 ) {
                     Button(
                         onClick = {
-                            loginViewModel.login(user, password = pass)
+                            loginViewModel.login(user, pass)
                         },
                         colors = ButtonDefaults.buttonColors(PrimarioVar)
                     ) {
@@ -146,11 +146,11 @@ fun Login(
             }
         }
         if (loginViewModel.success.value) {
-            Snackbar {
-                Text(text = "Login correcto")
-            }
-            Us.setUser(loginViewModel.user!!, context)
-            Us.getUser(context)?.let { sessionManager.saveUserSession(it, context) }
+            Toast.makeText(context, "Login Correcto", Toast.LENGTH_SHORT).show()
+            loginViewModel.success.value = false
+            Us.setUser(loginViewModel.userG!!)
+            user = ""
+            Us.getUser()?.let { sessionManager.saveUserSession(it, context) }
             val intent = Intent(context, HomeActivity::class.java)
             context.startActivity(intent)
         }

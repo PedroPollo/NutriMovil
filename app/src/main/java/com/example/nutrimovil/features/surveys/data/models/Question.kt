@@ -1,13 +1,8 @@
 package com.example.nutrimovil.features.surveys.data.models
 
-
-enum class TypeQuestion {
-    OPEN,
-    CLOSE
-}
-
 data class Question(
-    val text: String,
-    val response: List<String>?,
-    val questionType: TypeQuestion
+    val texto: String,
+    val opciones: List<String>?,
+    val tipo: String,
+    val _id: String
 )

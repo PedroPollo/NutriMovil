@@ -2,7 +2,6 @@ package com.example.nutrimovil.features.surveys.data.repository
 
 import com.example.nutrimovil.features.surveys.data.models.Question
 import com.example.nutrimovil.features.surveys.data.models.Survey
-import com.example.nutrimovil.features.surveys.data.models.TypeQuestion
 
 interface SurveyRepository {
     fun getSurvey(name: String): Survey
@@ -14,85 +13,101 @@ class SurveyLocalRepository : SurveyRepository {
         Survey(
             "1",
             "Primer cuestionario",
+            "Encuesta de prueba para la aplicacion mobil",
             listOf(
                 Question(
                     "Cual es tu color favorito",
                     listOf("Rojo", "Azul", "Amarillo", "Rosa"),
-                    TypeQuestion.CLOSE
+                    "opcion-multiple",
+                    _id = "id_prueba"
                 ),
                 Question(
                     "Cual es tu color menos favorito",
                     listOf("Rojo", "Azul", "Amarillo", "Rosa"),
-                    TypeQuestion.CLOSE
+                    "opcion-multiple",
+                    _id = "id_prueba"
                 ),
                 Question(
                     "Que nivel estudias",
                     listOf("Primaria", "Secundaria", "Preparatoria", "Licenciatura"),
-                    TypeQuestion.CLOSE
+                    "opcion-multiple",
+                    _id = "id_prueba"
                 ),
                 Question(
                     "Cual es tu materia favorita",
                     listOf("Español", "Matematicas", "Ingles", "Deportes"),
-                    TypeQuestion.CLOSE
+                    "opcion-multiple",
+                    _id = "id_prueba"
                 ),
                 Question(
                     "Quiero una extra",
                     listOf("Español", "Matematicas", "Ingles", "Deportes"),
-                    TypeQuestion.CLOSE
+                    "opcion-multiple",
+                    _id = "id_prueba"
                 ),
                 Question(
                     "Nombre",
                     null,
-                    TypeQuestion.OPEN
+                    "abierta",
+                    _id = "id_prueba"
                 ),
                 Question(
                     "Peso (Kg)",
                     null,
-                    TypeQuestion.OPEN
+                    "abierta",
+                    _id = "id_prueba"
                 ),
                 Question(
                     "Altura (Cm)",
                     null,
-                    TypeQuestion.OPEN
+                    "abierta",
+                    _id = "id_prueba"
                 )
-            )
+            ),
+            "67391dd221e10b6cb5c7705f"
         ),
         Survey(
             "2",
             "Segunda encuesta",
+            "Encuesta de prueba para la aplicacion movil",
             listOf(
                 Question(
                     "Cual es tu color favorito",
                     listOf("Rojo", "Azul", "Amarillo", "Rosa"),
-                    TypeQuestion.CLOSE
+                    "opcion-multiple",
+                    _id = "id_prueba"
                 ),
                 Question(
                     "Cual es tu color menos favorito",
                     listOf("Rojo", "Azul", "Amarillo", "Rosa"),
-                    TypeQuestion.CLOSE
+                    "opcion-multiple",
+                    _id = "id_prueba"
                 ),
                 Question(
                     "Que nivel estudias",
                     listOf("Primaria", "Secundaria", "Preparatoria", "Licenciatura"),
-                    TypeQuestion.CLOSE
+                    "opcion-multiple",
+                    _id = "id_prueba"
                 ),
                 Question(
                     "Cual es tu materia favorita",
                     listOf("Español", "Matematicas", "Ingles", "Deportes"),
-                    TypeQuestion.CLOSE
+                    "opcion-multiple",
+                    _id = "id_prueba"
                 )
-            )
+            ),
+            "67391dd221e10b6cb5c7705f"
         )
     )
 
     override fun getSurvey(name: String): Survey {
-        return surveys.find { it.name == name }!!
+        return surveys.find { it.nombre == name }!!
     }
 
     override fun getSurveysName(): List<String> {
         val list = mutableListOf<String>()
         for (survey in surveys) {
-            list.add(survey.name)
+            list.add(survey.nombre)
         }
         return list
     }

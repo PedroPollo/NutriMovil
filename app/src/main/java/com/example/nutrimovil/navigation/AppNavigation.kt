@@ -32,12 +32,11 @@ import com.example.nutrimovil.features.uploadSurveys.ui.screens.DateView
 import com.example.nutrimovil.features.uploadSurveys.ui.screens.PlaceView
 import com.example.nutrimovil.features.uploadSurveys.ui.screens.UploadSurveysActivity
 import com.example.nutrimovil.ui.screens.Login
-import com.example.nutrimovil.ui.screens.MainActivity
 import com.example.nutrimovil.ui.theme.PrimarioVar
 import com.example.nutrimovil.ui.theme.SecundarioVar
 
 @Composable
-fun SplashNavigation(cont: MainActivity, sessionManager: SessionManager) {
+fun SplashNavigation(sessionManager: SessionManager) {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
@@ -47,7 +46,7 @@ fun SplashNavigation(cont: MainActivity, sessionManager: SessionManager) {
             SplashScreen(navController = navController)
         }
         composable(AppScreens.MainScreen.route) {
-            Login(context = LocalContext.current, mainActivity = cont, sessionManager = sessionManager)
+            Login(context = LocalContext.current,sessionManager = sessionManager)
         }
     }
 }

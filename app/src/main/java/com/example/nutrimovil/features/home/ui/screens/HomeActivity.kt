@@ -16,7 +16,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -48,13 +53,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.nutrimovil.R
 import com.example.nutrimovil.data.repository.Us
 import com.example.nutrimovil.features.addResearcher.ui.screens.AddResearcherActivity
+import com.example.nutrimovil.features.downloadSurvey.ui.screens.DownloadSurveyActivity
+import com.example.nutrimovil.features.downloadSurvey.viewmodels.DownloadSurveyViewModel
 import com.example.nutrimovil.features.home.ui.components.Item
 import com.example.nutrimovil.features.home.viewmodels.AplicatedSurveysViewModel
 import com.example.nutrimovil.features.surveys.data.models.SurveyResponse
 import com.example.nutrimovil.features.surveys.ui.screens.SurveysActivity
 import com.example.nutrimovil.features.surveys.viewmodels.SurveyViewModel
 import com.example.nutrimovil.features.uploadSurveys.ui.screens.UploadSurveysActivity
-import com.example.nutrimovil.ui.screens.MainActivity
 import com.example.nutrimovil.ui.theme.Fondo
 import com.example.nutrimovil.ui.theme.NutriMovilTheme
 import com.example.nutrimovil.ui.theme.PrimarioVar
@@ -64,9 +70,11 @@ import com.example.nutrimovil.viewmodels.LoginViewModel
 
 class HomeActivity : ComponentActivity() {
 
+    private val u = Us.getUser()
     private val loginViewModel: LoginViewModel by viewModels()
     private val surveysResponseViewModel: AplicatedSurveysViewModel by viewModels()
-    private val u = Us.getUser(this)
+
+
 
     override fun onResume() {
         super.onResume()
@@ -79,15 +87,14 @@ class HomeActivity : ComponentActivity() {
                 Surface(
                     modifier = Modifier.fillMaxSize(), color = Fondo
                 ) {
-                    loginViewModel.setUser(u!!.id)
-                    surveysResponseViewModel.createJSON(this, u.id)
+                    loginViewModel.setUser()
+                    surveysResponseViewModel.createJSON(this, u!!.id)
 
-                    if (!loginViewModel.getAccepted()) {
+                    if (!u.isAccepted) {
                         NotAccepted(this)
                     } else {
-                        println()
                         Accepted(
-                            encuestador = loginViewModel.user!!.id,
+                            encuestador = loginViewModel.userG!!.id,
                             encuestas = surveysResponseViewModel.getSurveys(
                                 u.id,
                                 this
@@ -103,7 +110,10 @@ class HomeActivity : ComponentActivity() {
 
 @Preview(showBackground = true)
 @Composable
-fun NotAccepted(context: HomeActivity) {
+fun NotAccepted(
+    context: HomeActivity,
+    loginViewModel: LoginViewModel = viewModel()
+) {
     Column(
         modifier = Modifier.fillMaxSize(), Arrangement.Center, Alignment.CenterHorizontally
     ) {
@@ -147,9 +157,9 @@ fun NotAccepted(context: HomeActivity) {
         ) {
             Button(
                 onClick = {
-                    val intent = Intent(context, MainActivity::class.java)
-                    context.startActivity(intent)
+                    Us.closeUser()
                     context.finish()
+                    loginViewModel.closeUser()
                 }, colors = ButtonDefaults.buttonColors(SecundarioVar)
             ) {
                 Text(text = "Cerrar sesion", fontFamily = FontFamily.Monospace)
@@ -165,7 +175,9 @@ fun Accepted(
     encuestas: List<SurveyResponse>?,
     context: HomeActivity,
     surveyViewModel: SurveyViewModel = viewModel(),
-    encuestador: String
+    encuestador: String,
+    loginViewModel: LoginViewModel = viewModel(),
+    downloadSurveyViewModel: DownloadSurveyViewModel = viewModel()
 ) {
     var showBottomSheet by remember { mutableStateOf(false) }
     rememberCoroutineScope()
@@ -187,7 +199,9 @@ fun Accepted(
     }) {
         if (encuestas?.size != 0) {
             Column(
-                modifier = Modifier.fillMaxSize().padding(bottom = 80.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 80.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
@@ -196,7 +210,7 @@ fun Accepted(
                 ) {
                     encuestas?.forEachIndexed { _, surveyResponse ->
                         item {
-                            Item(name = surveyResponse.name)
+                            Item(name = surveyResponse.fecha)
                         }
                     }
                 }
@@ -295,7 +309,11 @@ fun Accepted(
                     }
                     Button(
                         modifier = Modifier.padding(5.dp),
-                        onClick = { /*TODO*/ },
+                        onClick = {
+                            downloadSurveyViewModel.getSurveys(Us.getUser()!!.reaserchers)
+                            val intent = Intent(context, DownloadSurveyActivity::class.java)
+                            context.startActivity(intent)
+                        },
                         colors = ButtonDefaults.buttonColors(PrimarioVar)
                     ) {
                         Icon(
@@ -320,9 +338,9 @@ fun Accepted(
                     }
                     Button(
                         modifier = Modifier.padding(5.dp), onClick = {
-                            val intent = Intent(context, MainActivity::class.java)
-                            Us.closeUser(context)
+                            Us.closeUser()
                             context.finish()
+                            loginViewModel.closeUser()
                         }, colors = ButtonDefaults.buttonColors(PrimarioVar)
                     ) {
                         Icon(

@@ -1,8 +1,10 @@
 package com.example.nutrimovil.features.addResearcher.ui.screens
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,11 +32,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
+import com.example.nutrimovil.data.repository.Us
+import com.example.nutrimovil.features.addResearcher.viewmodels.ResearcherViewModel
 import com.example.nutrimovil.ui.theme.Fondo
 import com.example.nutrimovil.ui.theme.NutriMovilTheme
 import com.example.nutrimovil.ui.theme.PrimarioVar
 
 class AddResearcherActivity : ComponentActivity() {
+    private val researcherViewModel: ResearcherViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -43,12 +48,9 @@ class AddResearcherActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = Fondo
                 ) {
+                    researcherViewModel.getInvestigadores()
                     AddResearcher(
-                        list = listOf(
-                            "Profesor 1",
-                            "Investigador ",
-                            "Investigador 2"
-                        ), this
+                        researcherViewModel, this
                     )
                 }
             }
@@ -58,12 +60,20 @@ class AddResearcherActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddResearcher(list: List<String>, context: AddResearcherActivity) {
+fun AddResearcher(
+    researcherViewModel: ResearcherViewModel,
+    context: AddResearcherActivity
+) {
+    val user = Us.getUser()
+    val list = researcherViewModel.investigadores
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        var invid: Int? by remember {
+            mutableStateOf(null)
+        }
         Row(
             modifier = Modifier.padding(top = 44.dp, bottom = 589.dp)
         ) {
@@ -90,11 +100,20 @@ fun AddResearcher(list: List<String>, context: AddResearcherActivity) {
                     expanded = isExpanded,
                     onDismissRequest = { isExpanded = false }
                 ) {
-                    for (label in list) {
-                        DropdownMenuItem(text = { Text(text = label) }, onClick = {
-                            selectedItem = label
-                            isExpanded = false
-                        })
+                    if (list != null) {
+                        for (label in list) {
+                            DropdownMenuItem(text = { Text(text = label.nombre) }, onClick = {
+                                selectedItem = label.nombre
+                                isExpanded = false
+                                invid = label.id
+                            })
+                        }
+                    } else {
+                        Toast.makeText(
+                            context,
+                            "check your internet connection",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             }
@@ -103,7 +122,13 @@ fun AddResearcher(list: List<String>, context: AddResearcherActivity) {
             Button(
                 modifier = Modifier.padding(5.dp),
                 onClick = {
-                          context.finish()
+                    if (invid == null || user == null){
+                        Toast.makeText(context, "Can load this operation", Toast.LENGTH_LONG).show()
+                    } else {
+                        invid?.let { researcherViewModel.setInvestigador(user.id,
+                            it.toString(), context) }
+                        context.finish()
+                    }
                 },
                 colors = ButtonDefaults.buttonColors(PrimarioVar)
             ) {

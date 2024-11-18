@@ -1,7 +1,9 @@
 package com.example.nutrimovil.features.surveys.ui.screens
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
+import android.location.LocationManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -34,7 +36,6 @@ import com.example.nutrimovil.features.home.ui.screens.HomeActivity
 import com.example.nutrimovil.features.home.viewmodels.AplicatedSurveysViewModel
 import com.example.nutrimovil.features.surveys.data.models.QuestionResponse
 import com.example.nutrimovil.features.surveys.data.models.SurveyResponse
-import com.example.nutrimovil.features.surveys.data.models.TypeQuestion
 import com.example.nutrimovil.features.surveys.ui.components.QuestionViewClose
 import com.example.nutrimovil.features.surveys.ui.components.QuestionViewOpen
 import com.example.nutrimovil.features.surveys.viewmodels.SurveyViewModel
@@ -47,6 +48,7 @@ import java.util.Calendar
 
 
 class SurveysActivity : ComponentActivity() {
+    private lateinit var locationManager: LocationManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,6 +58,7 @@ class SurveysActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = Fondo
                 ) {
+                    locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
                     val id = intent.getStringExtra("id")
                     val encuestador = intent.getStringExtra("Encuestador")
                     ShowSurvey(id = id!!, context = this, encuestador = encuestador)
@@ -72,8 +75,9 @@ data class ToggleableInfo(
 
 data class QuestionAndResponses(
     val text: String,
+    val id: String,
     val toggleableInfo: SnapshotStateList<ToggleableInfo>,
-    val questionType: TypeQuestion
+    val questionType: String
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -84,25 +88,28 @@ fun ShowSurvey(
     id: String,
     context: SurveysActivity,
     encuestador: String?,
-    aplicatedSurveysViewModel: AplicatedSurveysViewModel = viewModel()
+    aplicatedSurveysViewModel: AplicatedSurveysViewModel = viewModel(),
+    //locationManager: LocationManager
 ) {
+    //var location by remember { mutableStateOf<Location?>(null) }
     val intent = Intent(context, HomeActivity::class.java)
     val encuesta = surveyViewModel.getSurvey(id)
     val preguntas: MutableList<QuestionAndResponses> = mutableListOf()
 
-    for (question in encuesta.questions) {
+    for (question in encuesta.preguntas) {
         preguntas += QuestionAndResponses(
-            text = question.text,
+            text = question.texto,
             toggleableInfo = remember {
                 mutableStateListOf<ToggleableInfo>().apply {
-                    question.response?.let { state ->
+                    question.opciones?.let { state ->
                         addAll(state.map {
                             ToggleableInfo(isChecked = false, it)
                         })
                     } ?: add(ToggleableInfo(isChecked = true, ""))
                 }
             },
-            questionType = question.questionType
+            questionType = question.tipo,
+            id = question._id
         )
     }
 
@@ -110,15 +117,13 @@ fun ShowSurvey(
     lateinit var surveyResponse: SurveyResponse
     val gson = Gson()
 
-
-    println()
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = SecundarioVar
                 ),
-                title = { Text(encuesta.name, fontFamily = FontFamily.Monospace) },
+                title = { Text(encuesta.nombre, fontFamily = FontFamily.Monospace) },
                 navigationIcon = {
                     IconButton(onClick = { context.finish() }) {
                         Icon(Icons.Filled.ArrowBack, "Regresar")
@@ -126,20 +131,22 @@ fun ShowSurvey(
                 },
                 actions = {
                     IconButton(onClick = {
+                        /*getCurrentLocation(locationManager, context){
+                            location = it
+                        }*/
                         for (pregunta in preguntas) {
                             responses += QuestionResponse(
-                                pregunta.text,
+                                pregunta.id,
                                 pregunta.toggleableInfo.find { it.isChecked }?.text
                             )
                         }
                         surveyResponse = SurveyResponse(
-                            id = encuesta.id,
-                            name = encuesta.name,
+                            id = encuesta._id,
                             encuestador = encuestador.toString(),
                             questionResponse = responses,
                             fecha = SimpleDateFormat("dd-MM-yyyy").format(Calendar.getInstance().time)
                         )
-                        aplicatedSurveysViewModel.putSurvey(gson.toJson(surveyResponse), context, Us.getUser(context)!!.id)
+                        aplicatedSurveysViewModel.putSurvey(gson.toJson(surveyResponse), context, Us.getUser()!!.id)
                         context.startActivity(intent)
                         context.finish()
                     }) {
@@ -159,7 +166,7 @@ fun ShowSurvey(
             verticalArrangement = Arrangement.spacedBy(5.dp)
         ) {
             items(preguntas) { item ->
-                if (item.questionType == TypeQuestion.CLOSE) {
+                if (item.questionType == "opcion-multiple") {
                     QuestionViewClose(item.text, item.toggleableInfo)
                 } else {
                     QuestionViewOpen(pregunta = item.text, state = item.toggleableInfo)
@@ -168,3 +175,29 @@ fun ShowSurvey(
         }
     }
 }
+/*
+fun getCurrentLocation(locationManager: LocationManager, context: SurveysActivity, callback: (Location?) -> Unit){
+    val rEQUESTLOCATIONPERMISSION = 1
+
+    if (ContextCompat.checkSelfPermission(
+        context,
+        Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+        ){
+        val location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+        callback(location)
+    } else {
+        ActivityCompat.requestPermissions(
+            context,
+            arrayOf(
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ),
+            rEQUESTLOCATIONPERMISSION
+        )
+        (context as? ComponentActivity)?.finish()
+    }
+}*/

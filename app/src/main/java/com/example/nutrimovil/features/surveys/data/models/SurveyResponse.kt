@@ -3,22 +3,20 @@ package com.example.nutrimovil.features.surveys.data.models
 import com.google.gson.annotations.SerializedName
 
 data class SurveyResponse(
-    @SerializedName("id")
+    @SerializedName("id_encuesta")
     val id: String,
-    @SerializedName("encuestador")
+    @SerializedName("id_encuestador")
     val encuestador: String,
-    @SerializedName("name")
-    val name: String,
-    @SerializedName("fecha")
+    @SerializedName("fecha_aplicacion")
     val fecha: String,
-    @SerializedName("questionResponse")
+    @SerializedName("respuestas")
     val questionResponse: List<QuestionResponse>
 )
 
 data class QuestionResponse(
-    @SerializedName("text")
-    val text: String,
-    @SerializedName("response")
+    @SerializedName("id_pregunta")
+    val id: String,
+    @SerializedName("respuesta")
     var response: String?
 )
 

@@ -78,7 +78,7 @@ fun AllView(
     ) {
         Button(onClick = {
             val intent = Intent(context,HomeActivity::class.java)
-            applicatedSurveysViewModel.uploadJSON(context, Us.getUser(context)!!.id)
+            applicatedSurveysViewModel.uploadJSON(context, Us.getUser()!!.id)
             context.startActivity(intent)
             context.finish()
         }) {
