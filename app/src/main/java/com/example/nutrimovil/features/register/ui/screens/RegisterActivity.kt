@@ -164,7 +164,6 @@ fun Register(
                                         selectedItem = label.nombre
                                         isExpanded = false
                                         invId = label.id
-                                        println()
                                     })
                                 }
                             } else {

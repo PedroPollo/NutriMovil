@@ -49,7 +49,7 @@ class ResearcherViewModel : ViewModel() {
         }
     }
 
-    fun setInvestigador(enc: Int, inv: Int, context: Context) {
+    fun setInvestigador(enc: String, inv: String, context: Context) {
         viewModelScope.launch {
             try {
                 val response = apiService.setInvestigador(InvHasEnc(enc, inv))

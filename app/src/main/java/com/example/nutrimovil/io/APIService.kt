@@ -1,5 +1,6 @@
 package com.example.nutrimovil.io
 
+import com.example.nutrimovil.io.response.EncuestasResponse
 import com.example.nutrimovil.io.response.InvestigadoresResponse
 import com.example.nutrimovil.io.response.LoginResponse
 import com.example.nutrimovil.io.response.ShowableResponse
@@ -24,8 +25,12 @@ data class RegisterData(
 )
 
 data class InvHasEnc(
-    val enc_id: Int,
-    val inv_id: Int
+    val enc_id: String,
+    val inv_id: String
+)
+
+data class IdInvestigador(
+    val inv_id: String
 )
 
 interface APIService {
@@ -50,6 +55,16 @@ interface APIService {
         @Body body: InvHasEnc
     ):
             Call<ShowableResponse>
+
+    /*@POST(value = "inv/encuestas")
+    fun getEncuestas(
+        @Body body: IdInvestigador
+    ):
+            Call<ShowableResponse>*/
+
+    @GET("inv/encuestas")
+    fun getEncuestas():
+            Call<EncuestasResponse>
 
     companion object Factory {
         private const val BASE_URL = "https://nutribackend.onrender.com/api/"

@@ -16,7 +16,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -49,6 +54,7 @@ import com.example.nutrimovil.R
 import com.example.nutrimovil.data.repository.Us
 import com.example.nutrimovil.features.addResearcher.ui.screens.AddResearcherActivity
 import com.example.nutrimovil.features.downloadSurvey.ui.screens.DownloadSurveyActivity
+import com.example.nutrimovil.features.downloadSurvey.viewmodels.DownloadSurveyViewModel
 import com.example.nutrimovil.features.home.ui.components.Item
 import com.example.nutrimovil.features.home.viewmodels.AplicatedSurveysViewModel
 import com.example.nutrimovil.features.surveys.data.models.SurveyResponse
@@ -67,6 +73,8 @@ class HomeActivity : ComponentActivity() {
     private val u = Us.getUser()
     private val loginViewModel: LoginViewModel by viewModels()
     private val surveysResponseViewModel: AplicatedSurveysViewModel by viewModels()
+
+
 
     override fun onResume() {
         super.onResume()
@@ -168,7 +176,8 @@ fun Accepted(
     context: HomeActivity,
     surveyViewModel: SurveyViewModel = viewModel(),
     encuestador: String,
-    loginViewModel: LoginViewModel = viewModel()
+    loginViewModel: LoginViewModel = viewModel(),
+    downloadSurveyViewModel: DownloadSurveyViewModel = viewModel()
 ) {
     var showBottomSheet by remember { mutableStateOf(false) }
     rememberCoroutineScope()
@@ -201,7 +210,7 @@ fun Accepted(
                 ) {
                     encuestas?.forEachIndexed { _, surveyResponse ->
                         item {
-                            Item(name = surveyResponse.name)
+                            Item(name = surveyResponse.fecha)
                         }
                     }
                 }
@@ -301,7 +310,7 @@ fun Accepted(
                     Button(
                         modifier = Modifier.padding(5.dp),
                         onClick = {
-                                  // TODO
+                            downloadSurveyViewModel.getSurveys(Us.getUser()!!.reaserchers)
                             val intent = Intent(context, DownloadSurveyActivity::class.java)
                             context.startActivity(intent)
                         },

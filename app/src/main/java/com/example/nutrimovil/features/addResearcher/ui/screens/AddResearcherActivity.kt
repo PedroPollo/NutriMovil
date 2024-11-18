@@ -125,7 +125,8 @@ fun AddResearcher(
                     if (invid == null || user == null){
                         Toast.makeText(context, "Can load this operation", Toast.LENGTH_LONG).show()
                     } else {
-                        invid?.let { researcherViewModel.setInvestigador(user.id.toInt(), it, context) }
+                        invid?.let { researcherViewModel.setInvestigador(user.id,
+                            it.toString(), context) }
                         context.finish()
                     }
                 },
