@@ -16,6 +16,22 @@ data class LoginData(
     val password: String
 )
 
+data class EncuestasContestadas(
+    val data: List<EncuestaContestada>
+)
+
+data class EncuestaContestada(
+    val id_encuestador: String,
+    val fecha_aplicacion: String,
+    val id_encuesta: String,
+    val respuestas: List<PreguntaContestada>,
+)
+
+data class PreguntaContestada(
+    val id_pregunta: String,
+    val respuesta: String
+)
+
 data class EncuestasData(
     val investigadores: List<String?>
 )
@@ -64,7 +80,7 @@ interface APIService {
 
    @POST(value = "encuestas/loadresp")
    fun uploadEncuestas(
-       @Body body: String
+       @Body body: EncuestasContestadas
    ):
            Call<ShowableResponse>
 

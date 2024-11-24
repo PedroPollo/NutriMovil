@@ -12,6 +12,6 @@ data class Survey(
 
 
 data class ListSurvey(
-    @SerializedName("body")
+    @SerializedName("data")
     var data: List<Survey> = listOf()
 )

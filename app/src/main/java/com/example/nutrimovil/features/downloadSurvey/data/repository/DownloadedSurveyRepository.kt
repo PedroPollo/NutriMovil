@@ -24,6 +24,12 @@ interface DownloadedSurveyRepository {
     fun createJSON(
         context: Context, id: String
     )
+
+    fun applySurvey(
+        nombre: String,
+        encuestador: String,
+        context: Context
+    ): Survey
 }
 
 const val ARCHIVO_NAME = "downloadedsurveys.json"
@@ -39,6 +45,8 @@ class DownloadedSurveysLocalRepository: DownloadedSurveyRepository {
         return list
     }
 
+
+
     override fun downloadSurvey(survey: Survey, context: Context, id: String) {
         guardarJson(context, survey, id)
     }
@@ -47,8 +55,20 @@ class DownloadedSurveysLocalRepository: DownloadedSurveyRepository {
         val ruta = context.filesDir
         val archivo = File(ruta, id+ ARCHIVO_NAME)
         if (!archivo.exists()) {
-            val string = "{{\\n\" + \"  \\\"data\\\": [\\n\" + \"  ]\\n\" + \"}}"
+            val string = "{\n" + "  \"data\": [\n" + "  ]\n" + "}"
             archivo.writeText(string)
+        }
+    }
+
+    override fun applySurvey(nombre: String, encuestador: String, context: Context): Survey {
+        val encuestas = getDownloadedSurveys(encuestador, context)
+        return encuestas.find { it.nombre == nombre }!!.apply {
+            // Ajusta las opciones de las preguntas al descargar la encuesta
+            preguntas.forEach { pregunta ->
+                if (pregunta.opciones?.isEmpty() == true) {
+                    pregunta.opciones = null
+                }
+            }
         }
     }
 
@@ -87,15 +107,23 @@ class DownloadedSurveysLocalRepository: DownloadedSurveyRepository {
             put("_id", dataToWrite._id)
             put("nombre", dataToWrite.nombre)
             put("descripcion", dataToWrite.descripcion)
-            put("idInvestigador", dataToWrite.autor)
+            put("autor", dataToWrite.autor)
 
             // Convierte la lista de preguntas en un JSONArray
             val preguntasArray = JSONArray()
             dataToWrite.preguntas.forEach { question ->
                 val questionJson = JSONObject().apply {
-                    put("preguntaId", question._id)
+                    put("_id", question._id)
                     put("texto", question.texto)
+                    put("tipo", question.tipo)
                     // Añade otros campos de `Question` según sea necesario
+                    question.opciones?.let { opciones ->
+                        val opcionesArray = JSONArray()
+                        opciones.forEach { opcion ->
+                            opcionesArray.put(opcion)
+                        }
+                        put("opciones", opcionesArray)
+                    }
                 }
                 preguntasArray.put(questionJson)
             }

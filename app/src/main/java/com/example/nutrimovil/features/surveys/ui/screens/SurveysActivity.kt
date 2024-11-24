@@ -1,9 +1,7 @@
 package com.example.nutrimovil.features.surveys.ui.screens
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
-import android.location.LocationManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -48,7 +46,6 @@ import java.util.Calendar
 
 
 class SurveysActivity : ComponentActivity() {
-    private lateinit var locationManager: LocationManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,10 +55,9 @@ class SurveysActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = Fondo
                 ) {
-                    locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
                     val id = intent.getStringExtra("id")
                     val encuestador = intent.getStringExtra("Encuestador")
-                    ShowSurvey(id = id!!, context = this, encuestador = encuestador)
+                    ShowSurvey(nombre = id!!, context = this, encuestador = encuestador)
                 }
             }
         }
@@ -85,7 +81,7 @@ data class QuestionAndResponses(
 @Composable
 fun ShowSurvey(
     surveyViewModel: SurveyViewModel = viewModel(),
-    id: String,
+    nombre: String,
     context: SurveysActivity,
     encuestador: String?,
     aplicatedSurveysViewModel: AplicatedSurveysViewModel = viewModel(),
@@ -93,7 +89,7 @@ fun ShowSurvey(
 ) {
     //var location by remember { mutableStateOf<Location?>(null) }
     val intent = Intent(context, HomeActivity::class.java)
-    val encuesta = surveyViewModel.getSurvey(id)
+    val encuesta = surveyViewModel.getSurvey(name = nombre, encuestador = encuestador!!, context = context)
     val preguntas: MutableList<QuestionAndResponses> = mutableListOf()
 
     for (question in encuesta.preguntas) {
@@ -131,9 +127,6 @@ fun ShowSurvey(
                 },
                 actions = {
                     IconButton(onClick = {
-                        /*getCurrentLocation(locationManager, context){
-                            location = it
-                        }*/
                         for (pregunta in preguntas) {
                             responses += QuestionResponse(
                                 pregunta.id,
@@ -175,29 +168,3 @@ fun ShowSurvey(
         }
     }
 }
-/*
-fun getCurrentLocation(locationManager: LocationManager, context: SurveysActivity, callback: (Location?) -> Unit){
-    val rEQUESTLOCATIONPERMISSION = 1
-
-    if (ContextCompat.checkSelfPermission(
-        context,
-        Manifest.permission.ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
-            context,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED
-        ){
-        val location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-        callback(location)
-    } else {
-        ActivityCompat.requestPermissions(
-            context,
-            arrayOf(
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ),
-            rEQUESTLOCATIONPERMISSION
-        )
-        (context as? ComponentActivity)?.finish()
-    }
-}*/
