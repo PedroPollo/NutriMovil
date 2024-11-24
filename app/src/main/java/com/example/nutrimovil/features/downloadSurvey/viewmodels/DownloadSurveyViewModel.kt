@@ -9,6 +9,8 @@ import com.example.nutrimovil.features.surveys.data.models.Survey
 import com.example.nutrimovil.io.APIService
 import com.example.nutrimovil.io.EncuestasData
 import com.example.nutrimovil.io.response.EncuestasResponse
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
@@ -20,7 +22,9 @@ class DownloadSurveyViewModel : ViewModel() {
         APIService.create()
     }
 
-    var surveys: List<Survey?>? = null
+    private val _surveys = MutableStateFlow<List<Survey>?>(null) // Estado observable
+    val surveys: StateFlow<List<Survey>?> = _surveys
+
     val repository = DownloadedSurveysLocalRepository()
 
     fun createJson(context: Context, id: String) {
@@ -36,7 +40,6 @@ class DownloadSurveyViewModel : ViewModel() {
     }
 
     fun getSurveysFromCloud(idList: List<String?>) {
-        Log.d("Body enviado", EncuestasData(idList).toString())
         viewModelScope.launch {
             try {
                 val response = apiService.getEncuestas(EncuestasData(idList))
@@ -47,19 +50,18 @@ class DownloadSurveyViewModel : ViewModel() {
                     ) {
                         if (response.isSuccessful) {
                             val encuestasResponse = response.body()
-                            Log.d("Encuesta", encuestasResponse?.body.toString())
-                            surveys = encuestasResponse?.body
-                            println()
+                            _surveys.value = encuestasResponse?.body as List<Survey>?
                         }
                     }
 
                     override fun onFailure(call: Call<EncuestasResponse>, t: Throwable) {
                         Log.d("Servidor", "No se pudo conectar", t)
+                        _surveys.value = emptyList() // Manejo de error
                     }
-
                 })
             } catch (e: IOException) {
                 Log.e("ViewModel", "Error", e)
+                _surveys.value = emptyList() // Manejo de error
             }
         }
     }
