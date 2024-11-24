@@ -20,7 +20,7 @@ interface AplicatedSurveysRepository {
 
     fun createJSON(context: Context, id: String)
 
-    fun uploadJson(context: Context, id: String)
+    fun uploadJson(context: Context, id: String): String
 }
 
 const val ARCHIVO_NAME = "applicatedSurveys.json"
@@ -34,7 +34,6 @@ class AplicatedSurveysLocalRepository : AplicatedSurveysRepository {
     ): MutableList<SurveyResponse> {
         val aplicatedSurveys =
             Gson().fromJson(leerJson(context, encuestador), ListSurveyResponse::class.java)
-        println()
         val list = mutableListOf<SurveyResponse>()
 
         aplicatedSurveys.data.forEachIndexed { _, surveyResponse ->
@@ -60,22 +59,23 @@ class AplicatedSurveysLocalRepository : AplicatedSurveysRepository {
         if (!archivo.exists()) {
             val string = "{\n" + "  \"data\": [\n" + "  ]\n" + "}"
             archivo.writeText(string)
-            println()
         }
-        println()
     }
 
     override fun uploadJson(
         context: Context,
         id: String
+    ): String {
+        val content = leerJson(context, id)
+        return content
+    }
+
+    fun borrarJson(
+        context: Context,
+        id: String
     ) {
         val ruta = context.filesDir
         val archivo = File(ruta, id+ARCHIVO_NAME)
-        /*
-
-        TODO: Funcionamiento para subir el archivo json a la API antes de eliminarlo.
-
-         */
         archivo.delete()
     }
 
@@ -111,6 +111,5 @@ class AplicatedSurveysLocalRepository : AplicatedSurveysRepository {
         val ruta = context.filesDir
         val archivo = File(ruta, id+ARCHIVO_NAME)
         archivo.writeText(jsonObject.toString())
-        println()
     }
 }

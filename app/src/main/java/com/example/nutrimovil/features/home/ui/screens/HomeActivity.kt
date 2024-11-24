@@ -73,12 +73,14 @@ class HomeActivity : ComponentActivity() {
     private val u = Us.getUser()
     private val loginViewModel: LoginViewModel by viewModels()
     private val surveysResponseViewModel: AplicatedSurveysViewModel by viewModels()
+    private val downloadSurveyViewModel: DownloadSurveyViewModel by viewModels()
 
 
 
     override fun onResume() {
         super.onResume()
         surveysResponseViewModel.createJSON(this,u!!.id)
+        downloadSurveyViewModel.createJson(this, u.id)
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,6 +91,7 @@ class HomeActivity : ComponentActivity() {
                 ) {
                     loginViewModel.setUser()
                     surveysResponseViewModel.createJSON(this, u!!.id)
+                    downloadSurveyViewModel.createJson(this, u.id)
 
                     if (!u.isAccepted) {
                         NotAccepted(this)
@@ -176,8 +179,7 @@ fun Accepted(
     context: HomeActivity,
     surveyViewModel: SurveyViewModel = viewModel(),
     encuestador: String,
-    loginViewModel: LoginViewModel = viewModel(),
-    downloadSurveyViewModel: DownloadSurveyViewModel = viewModel()
+    loginViewModel: LoginViewModel = viewModel()
 ) {
     var showBottomSheet by remember { mutableStateOf(false) }
     rememberCoroutineScope()
@@ -310,7 +312,6 @@ fun Accepted(
                     Button(
                         modifier = Modifier.padding(5.dp),
                         onClick = {
-                            downloadSurveyViewModel.getSurveys(Us.getUser()!!.reaserchers)
                             val intent = Intent(context, DownloadSurveyActivity::class.java)
                             context.startActivity(intent)
                         },

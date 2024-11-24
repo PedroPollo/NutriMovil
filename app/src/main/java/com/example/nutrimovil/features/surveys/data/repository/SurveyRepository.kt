@@ -1,6 +1,6 @@
 package com.example.nutrimovil.features.surveys.data.repository
 
-import com.example.nutrimovil.features.surveys.data.models.Question
+import com.example.nutrimovil.features.surveys.data.models.Pregunta
 import com.example.nutrimovil.features.surveys.data.models.Survey
 
 interface SurveyRepository {
@@ -14,89 +14,89 @@ class SurveyLocalRepository : SurveyRepository {
             "1",
             "Primer cuestionario",
             "Encuesta de prueba para la aplicacion mobil",
+            "67391dd221e10b6cb5c7705f",
             listOf(
-                Question(
+                Pregunta(
                     "Cual es tu color favorito",
-                    listOf("Rojo", "Azul", "Amarillo", "Rosa"),
-                    "opcion-multiple",
+                    opciones = listOf("Rojo", "Azul", "Amarillo", "Rosa"),
+                    tipo = "opcion-multiple",
                     _id = "id_prueba"
                 ),
-                Question(
+                Pregunta(
                     "Cual es tu color menos favorito",
-                    listOf("Rojo", "Azul", "Amarillo", "Rosa"),
-                    "opcion-multiple",
+                    opciones =listOf("Rojo", "Azul", "Amarillo", "Rosa"),
+                    tipo = "opcion-multiple",
                     _id = "id_prueba"
                 ),
-                Question(
+                Pregunta(
                     "Que nivel estudias",
-                    listOf("Primaria", "Secundaria", "Preparatoria", "Licenciatura"),
-                    "opcion-multiple",
+                    opciones =listOf("Primaria", "Secundaria", "Preparatoria", "Licenciatura"),
+                    tipo = "opcion-multiple",
                     _id = "id_prueba"
                 ),
-                Question(
+                Pregunta(
                     "Cual es tu materia favorita",
-                    listOf("Español", "Matematicas", "Ingles", "Deportes"),
-                    "opcion-multiple",
+                    opciones = listOf("Español", "Matematicas", "Ingles", "Deportes"),
+                    tipo = "opcion-multiple",
                     _id = "id_prueba"
                 ),
-                Question(
+                Pregunta(
                     "Quiero una extra",
-                    listOf("Español", "Matematicas", "Ingles", "Deportes"),
-                    "opcion-multiple",
+                    opciones = listOf("Español", "Matematicas", "Ingles", "Deportes"),
+                    tipo = "opcion-multiple",
                     _id = "id_prueba"
                 ),
-                Question(
+                Pregunta(
                     "Nombre",
-                    null,
-                    "abierta",
+                    opciones = null,
+                    tipo = "abierta",
                     _id = "id_prueba"
                 ),
-                Question(
+                Pregunta(
                     "Peso (Kg)",
-                    null,
-                    "abierta",
+                    opciones = null,
+                    tipo = "abierta",
                     _id = "id_prueba"
                 ),
-                Question(
+                Pregunta(
                     "Altura (Cm)",
-                    null,
-                    "abierta",
+                    opciones = null,
+                    tipo = "abierta",
                     _id = "id_prueba"
                 )
-            ),
-            "67391dd221e10b6cb5c7705f"
+            )
         ),
         Survey(
             "2",
             "Segunda encuesta",
             "Encuesta de prueba para la aplicacion movil",
+            "67391dd221e10b6cb5c7705f",
             listOf(
-                Question(
+                Pregunta(
                     "Cual es tu color favorito",
-                    listOf("Rojo", "Azul", "Amarillo", "Rosa"),
-                    "opcion-multiple",
+                    opciones = listOf("Rojo", "Azul", "Amarillo", "Rosa"),
+                    tipo = "opcion-multiple",
                     _id = "id_prueba"
                 ),
-                Question(
+                Pregunta(
                     "Cual es tu color menos favorito",
-                    listOf("Rojo", "Azul", "Amarillo", "Rosa"),
-                    "opcion-multiple",
+                    opciones = listOf("Rojo", "Azul", "Amarillo", "Rosa"),
+                    tipo = "opcion-multiple",
                     _id = "id_prueba"
                 ),
-                Question(
+                Pregunta(
                     "Que nivel estudias",
-                    listOf("Primaria", "Secundaria", "Preparatoria", "Licenciatura"),
-                    "opcion-multiple",
+                    opciones = listOf("Primaria", "Secundaria", "Preparatoria", "Licenciatura"),
+                    tipo = "opcion-multiple",
                     _id = "id_prueba"
                 ),
-                Question(
+                Pregunta(
                     "Cual es tu materia favorita",
-                    listOf("Español", "Matematicas", "Ingles", "Deportes"),
-                    "opcion-multiple",
+                    opciones = listOf("Español", "Matematicas", "Ingles", "Deportes"),
+                    tipo = "opcion-multiple",
                     _id = "id_prueba"
                 )
-            ),
-            "67391dd221e10b6cb5c7705f"
+            )
         )
     )
 

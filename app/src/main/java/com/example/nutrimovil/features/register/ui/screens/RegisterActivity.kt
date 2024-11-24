@@ -84,7 +84,7 @@ fun Register(
         var matricula by remember { mutableStateOf("") }
         var pass by remember { mutableStateOf("") }
         var repass by remember { mutableStateOf("") }
-        var invId by remember { mutableStateOf<Int?>(null) }
+        var invId by remember { mutableStateOf<String?>(null) }
         Row {
             Image(
                 modifier = Modifier.size(92.dp, 101.dp),
@@ -160,10 +160,10 @@ fun Register(
                         ) {
                             if (list != null) {
                                 for (label in list) {
-                                    DropdownMenuItem(text = { Text(text = label.nombre) }, onClick = {
-                                        selectedItem = label.nombre
+                                    DropdownMenuItem(text = { Text(text = label.name) }, onClick = {
+                                        selectedItem = label.name
                                         isExpanded = false
-                                        invId = label.id
+                                        invId = label._id
                                     })
                                 }
                             } else {
@@ -197,7 +197,7 @@ fun Register(
                                     Toast.LENGTH_SHORT
                                 ).show()
                             } else {
-                                researcherViewModel.registerEncuestador(RegisterData(matricula = matricula,nombre = nombre, usuario = user, password = pass, investigadorId = invId!!), context)
+                                researcherViewModel.registerEncuestador(RegisterData(matricula = matricula,nombre = nombre, username = user, password = pass, investigadorId = invId!!), context)
                                 context.finish()
                             }
                         },

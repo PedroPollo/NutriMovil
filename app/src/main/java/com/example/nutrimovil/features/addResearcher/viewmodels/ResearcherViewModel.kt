@@ -79,7 +79,7 @@ class ResearcherViewModel : ViewModel() {
                     }
 
                     override fun onFailure(call: Call<ShowableResponse>, t: Throwable) {
-                        TODO("Not yet implemented")
+                        Log.d("Servidor", "No se pudo conectar con el servidor", t)
                     }
 
                 })

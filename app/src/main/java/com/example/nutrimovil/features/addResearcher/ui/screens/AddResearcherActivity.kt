@@ -71,7 +71,7 @@ fun AddResearcher(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        var invid: Int? by remember {
+        var invid: String? by remember {
             mutableStateOf(null)
         }
         Row(
@@ -102,10 +102,10 @@ fun AddResearcher(
                 ) {
                     if (list != null) {
                         for (label in list) {
-                            DropdownMenuItem(text = { Text(text = label.nombre) }, onClick = {
-                                selectedItem = label.nombre
+                            DropdownMenuItem(text = { Text(text = label.name) }, onClick = {
+                                selectedItem = label.name
                                 isExpanded = false
-                                invid = label.id
+                                invid = label._id
                             })
                         }
                     } else {

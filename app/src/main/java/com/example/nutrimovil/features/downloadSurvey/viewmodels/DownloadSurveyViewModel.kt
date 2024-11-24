@@ -1,10 +1,13 @@
 package com.example.nutrimovil.features.downloadSurvey.viewmodels
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.nutrimovil.features.downloadSurvey.data.repository.DownloadedSurveysLocalRepository
 import com.example.nutrimovil.features.surveys.data.models.Survey
 import com.example.nutrimovil.io.APIService
+import com.example.nutrimovil.io.EncuestasData
 import com.example.nutrimovil.io.response.EncuestasResponse
 import kotlinx.coroutines.launch
 import retrofit2.Call
@@ -18,11 +21,25 @@ class DownloadSurveyViewModel : ViewModel() {
     }
 
     var surveys: List<Survey?>? = null
+    val repository = DownloadedSurveysLocalRepository()
 
-    fun getSurveys(id: List<Any?>) {
+    fun createJson(context: Context, id: String) {
+        repository.createJSON(context, id)
+    }
+
+    fun downloadSurvey(context: Context, survey: Survey, id: String){
+        repository.downloadSurvey(context = context, survey = survey, id = id)
+    }
+
+    fun getSurveys(context: Context, id: String): MutableList<Survey> {
+        return repository.getDownloadedSurveys(context = context, encuestador = id)
+    }
+
+    fun getSurveysFromCloud(idList: List<String?>) {
+        Log.d("Body enviado", EncuestasData(idList).toString())
         viewModelScope.launch {
             try {
-                val response = apiService.getEncuestas()
+                val response = apiService.getEncuestas(EncuestasData(idList))
                 response.enqueue(object : Callback<EncuestasResponse> {
                     override fun onResponse(
                         call: Call<EncuestasResponse>,
@@ -30,7 +47,6 @@ class DownloadSurveyViewModel : ViewModel() {
                     ) {
                         if (response.isSuccessful) {
                             val encuestasResponse = response.body()
-                            println(encuestasResponse)
                             Log.d("Encuesta", encuestasResponse?.body.toString())
                             surveys = encuestasResponse?.body
                             println()

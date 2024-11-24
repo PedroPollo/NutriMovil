@@ -3,11 +3,7 @@ package com.example.nutrimovil.navigation
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.outlined.CheckCircle
-import androidx.compose.material.icons.outlined.DateRange
-import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -28,8 +24,6 @@ import com.example.nutrimovil.SplashScreen
 import com.example.nutrimovil.data.models.SessionManager
 import com.example.nutrimovil.features.uploadSurveys.ui.screens.AllView
 import com.example.nutrimovil.features.uploadSurveys.ui.screens.BottomNavigationItem
-import com.example.nutrimovil.features.uploadSurveys.ui.screens.DateView
-import com.example.nutrimovil.features.uploadSurveys.ui.screens.PlaceView
 import com.example.nutrimovil.features.uploadSurveys.ui.screens.UploadSurveysActivity
 import com.example.nutrimovil.ui.screens.Login
 import com.example.nutrimovil.ui.theme.PrimarioVar
@@ -62,16 +56,6 @@ fun SplashNavigation(sessionManager: SessionManager) {
                 title = "Todo",
                 selectedIcon = Icons.Filled.CheckCircle,
                 unselectedIcon = Icons.Outlined.CheckCircle
-            ),
-            BottomNavigationItem(
-                title = "Fecha",
-                selectedIcon = Icons.Filled.DateRange,
-                unselectedIcon = Icons.Outlined.DateRange
-            ),
-            BottomNavigationItem(
-                title = "Lugar",
-                selectedIcon = Icons.Filled.LocationOn,
-                unselectedIcon = Icons.Outlined.LocationOn
             )
         )
         var selectedItemIndex by rememberSaveable {
@@ -114,14 +98,6 @@ fun SplashNavigation(sessionManager: SessionManager) {
             ) {
                 composable(items[0].title) {
                     AllView(context = context)
-                }
-
-                composable(items[1].title) {
-                    DateView()
-                }
-
-                composable(items[2].title) {
-                    PlaceView()
                 }
             }
         }
