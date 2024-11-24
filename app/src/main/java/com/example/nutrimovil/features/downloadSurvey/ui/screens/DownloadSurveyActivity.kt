@@ -137,9 +137,9 @@ fun DownloadableSurveys(
                         if (surveys != null) {
                             for (label in surveys!!) {
                                 DropdownMenuItem(
-                                    text = { Text(text = label.nombre ?: "") },
+                                    text = { Text(text = label.nombre) },
                                     onClick = {
-                                        selectedItem = label.nombre ?: ""
+                                        selectedItem = label.nombre
                                         isExpanded = false
                                         selectedSurvey = label
                                     })
