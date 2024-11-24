@@ -16,21 +16,21 @@ data class LoginData(
     val password: String
 )
 
+data class EncuestasData(
+    val investigadores: List<String?>
+)
+
 data class RegisterData(
     val matricula: String,
     val nombre: String,
-    val usuario: String,
+    val username: String,
     val password: String,
-    val investigadorId: Int
+    val investigadorId: String
 )
 
 data class InvHasEnc(
-    val enc_id: String,
-    val inv_id: String
-)
-
-data class IdInvestigador(
-    val inv_id: String
+    val encId: String,
+    val invId: String
 )
 
 interface APIService {
@@ -56,18 +56,20 @@ interface APIService {
     ):
             Call<ShowableResponse>
 
-    /*@POST(value = "inv/encuestas")
+    @POST(value = "encuestas")
     fun getEncuestas(
-        @Body body: IdInvestigador
+        @Body body: EncuestasData
     ):
-            Call<ShowableResponse>*/
-
-    @GET("inv/encuestas")
-    fun getEncuestas():
             Call<EncuestasResponse>
 
+   @POST(value = "encuestas/loadresp")
+   fun uploadEncuestas(
+       @Body body: String
+   ):
+           Call<ShowableResponse>
+
     companion object Factory {
-        private const val BASE_URL = "https://nutribackend.onrender.com/api/"
+        private const val BASE_URL = "http://148.204.142.3:3002/api/"
         fun create():APIService{
             val retrofit = Retrofit.Builder()
                 .baseUrl(BASE_URL)

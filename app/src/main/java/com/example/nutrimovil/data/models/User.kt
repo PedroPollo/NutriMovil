@@ -6,7 +6,7 @@ data class User(
     val usuario: String,
     val password: String,
     val matricula: String,
-    val reaserchers: List<Any?>,
+    val researchers: List<String?>,
     val isAccepted: Boolean,
     val token: String
 )
