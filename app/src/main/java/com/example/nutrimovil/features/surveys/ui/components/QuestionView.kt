@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
@@ -31,7 +30,6 @@ import com.example.nutrimovil.features.surveys.ui.screens.ToggleableInfo
 import com.example.nutrimovil.ui.theme.PrimarioVar
 import com.example.nutrimovil.ui.theme.SecundarioVar
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QuestionViewOpen(pregunta: String, state: SnapshotStateList<ToggleableInfo>) {
     var text by remember { mutableStateOf("") }
@@ -65,7 +63,7 @@ fun QuestionViewOpen(pregunta: String, state: SnapshotStateList<ToggleableInfo>)
                         label = { Text(text = "Respuesta") },
                         value = text,
                         textStyle = TextStyle(color = Color.Black, fontFamily = FontFamily.Monospace),
-                        onValueChange = {
+                        onValueChange = { it ->
                             text = it
                             state.replaceAll {
                                 it.copy(

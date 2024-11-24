@@ -262,7 +262,7 @@ fun Accepted(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    for (survey in surveyViewModel.getSurveysName()) {
+                    for (survey in surveyViewModel.getSurveysName(encuestador, context)) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,
