@@ -9,6 +9,7 @@ class SurveyViewModel : ViewModel() {
     private val downloadedSurvey = DownloadedSurveysLocalRepository()
 
     fun getSurvey(name: String, encuestador: String, context: Context): Survey {
+        println()
         return downloadedSurvey.applySurvey(
             nombre = name,
             encuestador = encuestador,
@@ -24,6 +25,7 @@ class SurveyViewModel : ViewModel() {
     }
 
     fun getSurveysName(encuestador: String, context: Context): List<String> {
+        println()
         val encuestas = downloadedSurvey.getDownloadedSurveys(encuestador, context)
         val list = mutableListOf<String>()
         for (survey in encuestas) {

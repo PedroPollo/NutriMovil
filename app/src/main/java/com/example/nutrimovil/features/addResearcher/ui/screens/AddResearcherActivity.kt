@@ -102,8 +102,8 @@ fun AddResearcher(
                 ) {
                     if (list != null) {
                         for (label in list) {
-                            DropdownMenuItem(text = { Text(text = label.name) }, onClick = {
-                                selectedItem = label.name
+                            DropdownMenuItem(text = { Text(text = label.nom_usuario + " " + label.apellidos_usuario) }, onClick = {
+                                selectedItem = label.nom_usuario + "" + label.apellidos_usuario
                                 isExpanded = false
                                 invid = label._id
                             })
