@@ -17,7 +17,8 @@ data class InvestigadoresResponse(
 
 data class Investigador(
     val _id: String,
-    val name: String
+    val nom_usuario: String,
+    val apellidos_usuario: String
 )
 
 data class EncuestasResponse(

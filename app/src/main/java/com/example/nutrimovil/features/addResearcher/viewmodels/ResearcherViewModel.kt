@@ -115,6 +115,12 @@ class ResearcherViewModel : ViewModel() {
                                     ).show()
                                 }
                             }
+                        } else {
+                            Toast.makeText(
+                                context,
+                                "Registro fallido, Usuario o matricula ya existe",
+                                Toast.LENGTH_LONG
+                            ).show()
                         }
                     }
 
