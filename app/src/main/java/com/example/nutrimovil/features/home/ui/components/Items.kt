@@ -17,13 +17,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.nutrimovil.ui.theme.SecundarioVar
 
 @Composable
-fun Item(name: String) {
+fun Item(dia: String, encuesta: String) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -39,13 +41,27 @@ fun Item(name: String) {
             Column {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = name,
+                    text = encuesta,
                     style = TextStyle(
                         color = Color.Black,
                         fontFamily = FontFamily.Monospace,
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        textDecoration = TextDecoration.Underline,
+                        fontWeight = FontWeight.Bold
                     )
                 )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        style = TextStyle(
+                            color = Color.Black,
+                            fontFamily = FontFamily.Default
+                        ),
+                        text = dia,
+                    )
+                }
             }
         }
     }
@@ -54,5 +70,5 @@ fun Item(name: String) {
 @Preview(showBackground = true)
 @Composable
 fun showItem() {
-    Item(name = "Pedro Alejandro Nunez Perez")
+    Item(dia = "29-01-2025 20:23", encuesta = "Nutricion en embarazadas")
 }

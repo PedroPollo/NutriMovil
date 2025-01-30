@@ -3,6 +3,7 @@ package com.example.nutrimovil.features.surveys.ui.screens
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
@@ -57,7 +58,7 @@ class SurveysActivity : ComponentActivity() {
                 ) {
                     val id = intent.getStringExtra("id")
                     val encuestador = intent.getStringExtra("Encuestador")
-                    ShowSurvey(nombre = id!!, context = this, encuestador = encuestador)
+                    ShowSurvey(id = id!!, context = this, encuestador = encuestador)
                 }
             }
         }
@@ -81,15 +82,13 @@ data class QuestionAndResponses(
 @Composable
 fun ShowSurvey(
     surveyViewModel: SurveyViewModel = viewModel(),
-    nombre: String,
+    id: String,
     context: SurveysActivity,
     encuestador: String?,
     aplicatedSurveysViewModel: AplicatedSurveysViewModel = viewModel(),
-    //locationManager: LocationManager
 ) {
-    //var location by remember { mutableStateOf<Location?>(null) }
     val intent = Intent(context, HomeActivity::class.java)
-    val encuesta = surveyViewModel.getSurvey(name = nombre, encuestador = encuestador!!, context = context)
+    val encuesta = surveyViewModel.getSurvey(id = id, encuestador = encuestador!!, context = context)
     val preguntas: MutableList<QuestionAndResponses> = mutableListOf()
 
     for (question in encuesta.preguntas) {
@@ -127,21 +126,46 @@ fun ShowSurvey(
                 },
                 actions = {
                     IconButton(onClick = {
+                        var isValid = true
+
                         for (pregunta in preguntas) {
+                            val respuesta = pregunta.toggleableInfo.find { it.isChecked }?.text
+                            if (pregunta.questionType == "opcion-multiple" && respuesta.isNullOrEmpty()) {
+                                isValid = false
+                                break
+                            }
+                            if (pregunta.questionType == "abierta" && respuesta.isNullOrBlank()) {
+                                isValid = false
+                                break
+                            }
                             responses += QuestionResponse(
                                 pregunta.id,
-                                pregunta.toggleableInfo.find { it.isChecked }?.text
+                                respuesta
                             )
                         }
-                        surveyResponse = SurveyResponse(
-                            id = encuesta._id,
-                            encuestador = encuestador.toString(),
-                            questionResponse = responses,
-                            fecha = SimpleDateFormat("dd-MM-yyyy").format(Calendar.getInstance().time)
-                        )
-                        aplicatedSurveysViewModel.putSurvey(gson.toJson(surveyResponse), context, Us.getUser()!!.id)
-                        context.startActivity(intent)
-                        context.finish()
+
+                        if (isValid) {
+                            surveyResponse = SurveyResponse(
+                                id = encuesta._id,
+                                encuestador = encuestador.toString(),
+                                questionResponse = responses,
+                                fecha = SimpleDateFormat("dd-MM-yyyy HH:mm").format(Calendar.getInstance().time),
+                                encuesta = encuesta.nombre
+                            )
+                            aplicatedSurveysViewModel.putSurvey(
+                                gson.toJson(surveyResponse),
+                                context,
+                                Us.getUser()!!.id
+                            )
+                            context.startActivity(intent)
+                            context.finish()
+                        } else {
+                            Toast.makeText(
+                                context,
+                                "Por favor, responde todas las preguntas antes de guardar.",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
                     }) {
                         Icon(
                             imageVector = Icons.Filled.CheckCircle,

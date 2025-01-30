@@ -212,7 +212,7 @@ fun Accepted(
                 ) {
                     encuestas?.forEachIndexed { _, surveyResponse ->
                         item {
-                            Item(name = surveyResponse.fecha)
+                            Item(dia = surveyResponse.fecha, encuesta = surveyResponse.encuesta)
                         }
                     }
                 }
@@ -271,12 +271,12 @@ fun Accepted(
                             Button(onClick = {
                                 val intent = Intent(context, SurveysActivity::class.java)
                                 intent.apply {
-                                    putExtra("id", survey)
+                                    putExtra("id", survey._id)
                                     putExtra("Encuestador", encuestador)
                                 }
                                 context.startActivity(intent)
                             }) {
-                                Text(text = survey)
+                                Text(text = survey.nombre)
                             }
                         }
                     }

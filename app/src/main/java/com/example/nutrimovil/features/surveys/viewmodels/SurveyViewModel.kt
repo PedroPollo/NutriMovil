@@ -8,10 +8,9 @@ import com.example.nutrimovil.features.surveys.data.models.Survey
 class SurveyViewModel : ViewModel() {
     private val downloadedSurvey = DownloadedSurveysLocalRepository()
 
-    fun getSurvey(name: String, encuestador: String, context: Context): Survey {
-        println()
+    fun getSurvey(id: String, encuestador: String, context: Context): Survey {
         return downloadedSurvey.applySurvey(
-            nombre = name,
+            id = id,
             encuestador = encuestador,
             context = context
         ).apply {
@@ -24,13 +23,17 @@ class SurveyViewModel : ViewModel() {
         }
     }
 
-    fun getSurveysName(encuestador: String, context: Context): List<String> {
-        println()
+    fun getSurveysName(encuestador: String, context: Context): List<SurveyData> {
         val encuestas = downloadedSurvey.getDownloadedSurveys(encuestador, context)
-        val list = mutableListOf<String>()
+        val list = mutableListOf<SurveyData>()
         for (survey in encuestas) {
-            list.add((survey.nombre))
+            list.add(SurveyData(_id = survey._id, nombre = survey.nombre))
         }
         return list
     }
 }
+
+data class SurveyData(
+    val _id: String,
+    val nombre: String
+)

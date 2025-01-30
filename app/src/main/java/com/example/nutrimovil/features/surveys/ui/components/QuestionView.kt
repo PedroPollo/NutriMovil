@@ -64,7 +64,7 @@ fun QuestionViewOpen(pregunta: String, state: SnapshotStateList<ToggleableInfo>)
                         value = text,
                         textStyle = TextStyle(color = Color.Black, fontFamily = FontFamily.Monospace),
                         onValueChange = { it ->
-                            text = it
+                            text = if (it.isBlank()) " " else it // Validar y agregar espacio si está vacío
                             state.replaceAll {
                                 it.copy(
                                     isChecked = it.text == info.text,
@@ -75,7 +75,10 @@ fun QuestionViewOpen(pregunta: String, state: SnapshotStateList<ToggleableInfo>)
                 }
                 FloatingActionButton(
                     modifier = Modifier.padding(10.dp),
-                    onClick = { isExpanded = !isExpanded },
+                    onClick = {
+                        if (text.isBlank()) text = " " // Asegurar que no quede vacío al guardar
+                        isExpanded = !isExpanded
+                    },
                     containerColor = SecundarioVar
                 ) {
                     Text(text = "Siguiente")
@@ -84,6 +87,7 @@ fun QuestionViewOpen(pregunta: String, state: SnapshotStateList<ToggleableInfo>)
         }
     }
 }
+
 
 @Composable
 fun QuestionViewClose(pregunta: String, state: SnapshotStateList<ToggleableInfo>) {

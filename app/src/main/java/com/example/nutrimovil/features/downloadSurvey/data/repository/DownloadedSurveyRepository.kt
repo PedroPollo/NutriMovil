@@ -1,6 +1,7 @@
 package com.example.nutrimovil.features.downloadSurvey.data.repository
 
 import android.content.Context
+import android.widget.Toast
 import com.example.nutrimovil.features.surveys.data.models.ListSurvey
 import com.example.nutrimovil.features.surveys.data.models.Survey
 import com.google.gson.Gson
@@ -34,35 +35,42 @@ interface DownloadedSurveyRepository {
 
 const val ARCHIVO_NAME = "downloadedsurveys.json"
 
-class DownloadedSurveysLocalRepository: DownloadedSurveyRepository {
+class DownloadedSurveysLocalRepository : DownloadedSurveyRepository {
+
     override fun getDownloadedSurveys(encuestador: String, context: Context): MutableList<Survey> {
         val surveys = Gson().fromJson(leerJson(context, encuestador), ListSurvey::class.java)
         val list = mutableListOf<Survey>()
 
-        surveys.data.forEachIndexed {_, survey ->
+        surveys.data.forEachIndexed { _, survey ->
             list.add(survey)
         }
         return list
     }
 
-
-
     override fun downloadSurvey(survey: Survey, context: Context, id: String) {
-        guardarJson(context, survey, id)
+        // Verificar si la encuesta ya está descargada
+        if (isSurveyDownloaded(survey._id, context, id)) {
+            // Mostrar un Toast indicando que la encuesta ya está descargada
+            Toast.makeText(context, "La encuesta ya está descargada.", Toast.LENGTH_SHORT).show()
+        } else {
+            // Si no está descargada, proceder con el guardado
+            guardarJson(context, survey, id)
+            Toast.makeText(context, "Encuesta descargada correctamente.", Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun createJSON(context: Context, id: String) {
         val ruta = context.filesDir
-        val archivo = File(ruta, id+ ARCHIVO_NAME)
+        val archivo = File(ruta, id + ARCHIVO_NAME)
         if (!archivo.exists()) {
             val string = "{\n" + "  \"data\": [\n" + "  ]\n" + "}"
             archivo.writeText(string)
         }
     }
 
-    override fun applySurvey(nombre: String, encuestador: String, context: Context): Survey {
+    override fun applySurvey(id: String, encuestador: String, context: Context): Survey {
         val encuestas = getDownloadedSurveys(encuestador, context)
-        return encuestas.find { it.nombre == nombre }!!.apply {
+        return encuestas.find { it._id == id }!!.apply {
             // Ajusta las opciones de las preguntas al descargar la encuesta
             preguntas.forEach { pregunta ->
                 if (pregunta.opciones?.isEmpty() == true) {
@@ -72,12 +80,9 @@ class DownloadedSurveysLocalRepository: DownloadedSurveyRepository {
         }
     }
 
-    private fun leerJson(
-        context: Context,
-        id: String
-    ): String {
+    private fun leerJson(context: Context, id: String): String {
         val ruta = context.filesDir
-        val archivo = File(ruta,id+ ARCHIVO_NAME)
+        val archivo = File(ruta, id + ARCHIVO_NAME)
         val leeArchivo = FileInputStream(archivo)
         try {
             val isr = InputStreamReader(leeArchivo)
@@ -97,7 +102,7 @@ class DownloadedSurveysLocalRepository: DownloadedSurveyRepository {
         }
     }
 
-    private fun guardarJson(context: Context, dataToWrite: Survey, id:String) {
+    private fun guardarJson(context: Context, dataToWrite: Survey, id: String) {
         // Lee el contenido del archivo JSON existente
         val string = leerJson(context, id)
         val jsonObject = JSONObject(string)
@@ -133,7 +138,19 @@ class DownloadedSurveysLocalRepository: DownloadedSurveyRepository {
         // Agrega el nuevo objeto de la encuesta al array `data`
         val ruta = context.filesDir
         jsonObject.getJSONArray("data").put(surveyJson)
-        val archivo = File(ruta, id+ ARCHIVO_NAME)
+        val archivo = File(ruta, id + ARCHIVO_NAME)
         archivo.writeText(jsonObject.toString())
+    }
+
+    /**
+     * Verifica si una encuesta ya está descargada.
+     * @param surveyId El ID de la encuesta a verificar.
+     * @param context Contexto de la aplicación.
+     * @param id Identificador del archivo JSON.
+     * @return `true` si la encuesta ya está descargada, de lo contrario `false`.
+     */
+    private fun isSurveyDownloaded(surveyId: String, context: Context, id: String): Boolean {
+        val surveys = getDownloadedSurveys(id, context)
+        return surveys.any { it._id == surveyId }
     }
 }

@@ -45,8 +45,8 @@ data class RegisterData(
 )
 
 data class InvHasEnc(
-    val encId: String,
-    val invId: String
+    val enc_id: String,
+    val inv_id: String
 )
 
 interface APIService {

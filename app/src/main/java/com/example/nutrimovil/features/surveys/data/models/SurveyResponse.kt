@@ -10,7 +10,9 @@ data class SurveyResponse(
     @SerializedName("fecha_aplicacion")
     val fecha: String,
     @SerializedName("respuestas")
-    val questionResponse: List<QuestionResponse>
+    val questionResponse: List<QuestionResponse>,
+    @SerializedName("encuesta")
+    val encuesta: String
 )
 
 data class QuestionResponse(

@@ -163,8 +163,6 @@ fun DownloadableSurveys(
                                 survey = survey,
                                 id = id
                             )
-                            Toast.makeText(context, "Encuesta descargada", Toast.LENGTH_SHORT)
-                                .show()
                             context.finish()
                         } ?: Toast.makeText(
                             context,

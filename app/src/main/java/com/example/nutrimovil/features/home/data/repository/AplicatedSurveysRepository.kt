@@ -10,6 +10,7 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
 import java.io.InputStreamReader
+import java.text.SimpleDateFormat
 
 interface AplicatedSurveysRepository {
     fun getAplicatedSurveys(
@@ -39,7 +40,9 @@ class AplicatedSurveysLocalRepository : AplicatedSurveysRepository {
         aplicatedSurveys.data.forEachIndexed { _, surveyResponse ->
             if (surveyResponse.encuestador == encuestador) list.add(surveyResponse)
         }
-        return list
+        return list.sortedByDescending { surveyResponse ->
+            SimpleDateFormat("dd-MM-yyyy HH:mm").parse(surveyResponse.fecha).time
+        }.toMutableList()
     }
 
     override fun addAplicatedSurvey(
