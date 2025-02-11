@@ -41,7 +41,7 @@ class AplicatedSurveysLocalRepository : AplicatedSurveysRepository {
             if (surveyResponse.encuestador == encuestador) list.add(surveyResponse)
         }
         return list.sortedByDescending { surveyResponse ->
-            SimpleDateFormat("dd-MM-yyyy HH:mm").parse(surveyResponse.fecha).time
+            SimpleDateFormat("dd-MM-yyyy HH:mm:ss").parse(surveyResponse.fecha).time
         }.toMutableList()
     }
 

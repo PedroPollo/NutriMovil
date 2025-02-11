@@ -33,7 +33,7 @@ fun Item(dia: String, encuesta: String) {
         color = SecundarioVar
     ) {
         Row(
-            modifier = Modifier.padding(30.dp),
+            modifier = Modifier.padding(15.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {

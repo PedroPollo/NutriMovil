@@ -149,7 +149,7 @@ fun ShowSurvey(
                                 id = encuesta._id,
                                 encuestador = encuestador.toString(),
                                 questionResponse = responses,
-                                fecha = SimpleDateFormat("dd-MM-yyyy HH:mm").format(Calendar.getInstance().time),
+                                fecha = SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(Calendar.getInstance().time),
                                 encuesta = encuesta.nombre
                             )
                             aplicatedSurveysViewModel.putSurvey(

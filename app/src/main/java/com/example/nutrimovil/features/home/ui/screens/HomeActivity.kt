@@ -76,7 +76,6 @@ class HomeActivity : ComponentActivity() {
     private val downloadSurveyViewModel: DownloadSurveyViewModel by viewModels()
 
 
-
     override fun onResume() {
         super.onResume()
         surveysResponseViewModel.createJSON(this,u!!.id)

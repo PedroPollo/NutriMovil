@@ -12,6 +12,8 @@ import com.example.nutrimovil.io.EncuestasContestadas
 import com.example.nutrimovil.io.response.ShowableResponse
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
@@ -19,6 +21,10 @@ import retrofit2.Response
 import java.io.IOException
 
 class AplicatedSurveysViewModel : ViewModel() {
+
+    private val _uploadstate = MutableStateFlow(false)
+    val uploadState: StateFlow<Boolean> = _uploadstate
+
     private val apiService: APIService by lazy {
         APIService.create()
     }
@@ -37,6 +43,8 @@ class AplicatedSurveysViewModel : ViewModel() {
     }
 
     fun uploadSurveys(context: Context, id: String) {
+        _uploadstate.value = true // Indicamos que el proceso de subida ha comenzado
+
         // Obtén el contenido del JSON desde el archivo
         val body = repository.uploadJson(context, id)
 
@@ -58,26 +66,28 @@ class AplicatedSurveysViewModel : ViewModel() {
                                 Toast.makeText(context, "Datos agregados con éxito", Toast.LENGTH_SHORT).show()
                                 repository.borrarJson(context, id)
                             } else {
-                                // Si la respuesta de la API no fue exitosa, manejar el error
                                 Toast.makeText(context, "Error al enviar los datos", Toast.LENGTH_LONG).show()
                             }
+                            _uploadstate.value = false // Finaliza el estado de subida, independientemente del resultado
                         }
 
                         override fun onFailure(call: Call<ShowableResponse>, t: Throwable) {
                             Log.d("Servidor", "No se pudo conectar", t)
                             Toast.makeText(context, "No se pudo conectar con el servidor", Toast.LENGTH_LONG).show()
+                            _uploadstate.value = false // Finaliza el estado de subida al fallar la conexión
                         }
-
                     })
                 } catch (e: IOException) {
                     Log.e("ViewModel", "Error: ", e)
                     Toast.makeText(context, "No se pudo conectar con el servidor 2", Toast.LENGTH_LONG).show()
+                    _uploadstate.value = false // Finaliza el estado de subida en caso de excepción
                 }
             }
         } else {
             // Si la deserialización falló, muestra un mensaje de error
             Toast.makeText(context, "El archivo JSON no es válido", Toast.LENGTH_LONG).show()
             Log.e("uploadSurveys", "Error en la deserialización del JSON.")
+            _uploadstate.value = false // Finaliza el estado de subida si la deserialización falla
         }
     }
 
